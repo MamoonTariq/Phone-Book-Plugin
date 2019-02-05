@@ -1,1 +1,1 @@
-This Plugin is used for create a Phone Diary
+Contact Book Plugin
