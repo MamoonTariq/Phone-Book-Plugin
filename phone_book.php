@@ -207,34 +207,34 @@ function prifix_ajax_update_phone_book(){
 
 
 
-// function add_my_custom_page() {
-//     // Create post object
-//     $my_post = array(
-//       'post_title'    => wp_strip_all_tags( 'My Custom Page' ),
-//       'post_content'  => '[phone-book]',
-//       'post_status'   => 'publish',
-//       'post_author'   => 1,
-//       'post_type'     => 'page',
-//     );
+function add_my_custom_page() {
+    // Create post object
+    $my_post = array(
+      'post_title'    => wp_strip_all_tags( 'My Custom Page' ),
+      'post_content'  => '[phone-book]',
+      'post_status'   => 'publish',
+      'post_author'   => 1,
+      'post_type'     => 'page',
+    );
 
-//     // Insert the post into the database
-//     $post_id = wp_insert_post( $my_post );
-//     add_option("Custom_plugin_page_id" , $post_id);
-// }
+    // Insert the post into the database
+    $post_id = wp_insert_post( $my_post );
+    add_option("Custom_plugin_page_id" , $post_id);
+}
 
-// register_activation_hook(__FILE__, 'add_my_custom_page');
+register_activation_hook(__FILE__, 'add_my_custom_page');
 
 
 
-// 	function drop_page(){
+	function drop_page(){
 
-// 		$the_post_id = get_option("Custom_plugin_page_id");
+		$the_post_id = get_option("Custom_plugin_page_id");
 
-// 		if (!empty($the_post_id)) {
-// 			wp_delete_post($the_post_id);
-// 		}
-// 	}
-// register_deactivation_hook( __FILE__, "drop_page");
+		if (!empty($the_post_id)) {
+			wp_delete_post($the_post_id);
+		}
+	}
+register_deactivation_hook( __FILE__, "drop_page");
 
 
 
