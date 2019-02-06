@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Phone Book;
+Plugin Name: Phone Book
 Plugin URI:https://www.google.com
 Author: M Mamoon Tariq
 Author URI: https://www.facebook.com/mamoontariq786
@@ -27,14 +27,14 @@ function add_css_js_files(){
 
 	wp_enqueue_style('bootstrap-css', PLUGIN_DIR_URL.'assets/css/bootstrap.css');
 	wp_enqueue_style('custom-css', PLUGIN_DIR_URL.'assets/css/custom.css');
-	wp_enqueue_script('jquery-js', PLUGIN_DIR_URL.'assets/js/jquery.js');
+	//wp_enqueue_script('jquery-js', PLUGIN_DIR_URL.'assets/js/jquery.js');
 	wp_enqueue_script('bootstrap-js', PLUGIN_DIR_URL.'assets/js/bootstrap.js',"",PLUGIN_VERSION,true);
 	wp_enqueue_script('custom-js', PLUGIN_DIR_URL.'assets/js/custom.js',"",PLUGIN_VERSION,true);
 
 
 }
-add_action("init","add_css_js_files");
-add_action('admin_enqueue_scripts', "add_css_js_files");
+add_action("wp_enqueue_scripts","add_css_js_files");
+//add_action('admin_enqueue_scripts', "add_css_js_files");
 
 
 
@@ -207,50 +207,99 @@ function prifix_ajax_update_phone_book(){
 
 
 
-function add_my_custom_page() {
-    // Create post object
-    $my_post = array(
-      'post_title'    => wp_strip_all_tags( 'My Custom Page' ),
-      'post_content'  => '[phone-book]',
-      'post_status'   => 'publish',
-      'post_author'   => 1,
-      'post_type'     => 'page',
-    );
+// function add_my_custom_page() {
+//     // Create post object
+//     $my_post = array(
+//       'post_title'    => wp_strip_all_tags( 'My Custom Page' ),
+//       'post_content'  => '[phone-book]',
+//       'post_status'   => 'publish',
+//       'post_author'   => 1,
+//       'post_type'     => 'page',
+//     );
 
-    // Insert the post into the database
-    $post_id = wp_insert_post( $my_post );
-    add_option("Custom_plugin_page_id" , $post_id);
+//     // Insert the post into the database
+//     $post_id = wp_insert_post( $my_post );
+//     add_option("Custom_plugin_page_id" , $post_id);
+// }
+
+// register_activation_hook(__FILE__, 'add_my_custom_page');
+
+
+
+// 	function drop_page(){
+
+// 		$the_post_id = get_option("Custom_plugin_page_id");
+
+// 		if (!empty($the_post_id)) {
+// 			wp_delete_post($the_post_id);
+// 		}
+// 	}
+// register_deactivation_hook( __FILE__, "drop_page");
+
+
+
+
+function register_my_widget(){
+
+	register_widget('my_widget');   //Call Class of Widget
 }
 
-register_activation_hook(__FILE__, 'add_my_custom_page');
+add_action( "widgets_init" , "register_my_widget" );
 
 
 
-	function drop_page(){
-
-		$the_post_id = get_option("Custom_plugin_page_id");
-
-		if (!empty($the_post_id)) {
-			wp_delete_post($the_post_id);
-		}
+class my_widget extends Wp_Widget{
+	
+	function __construct(){
+		
+		parent::__construct(
+			'my_widget',
+			__('TITLE'),  //title of our widget
+			array('description' => __('This is my testing widget'))  //Description of Widget
+		);
 	}
-register_deactivation_hook( __FILE__, "drop_page");
 
+	public function widget($arg, $instance){
 
+		$title = apply_filters('widget_title' , $instance['title']);
 
+		echo $args['before_widget'];   //<aside>
 
+		if (!empty($title)) {
+			
+			echo $args['before_title'] . $title . $args['after_title']; // <h1> title </h1>
+		}
 
+		echo $args['after_widget'];   //</aside>
 
+	}
 
+	function form($instance){
 
+		if (isset($instance['title'])) {
+			
+			$title = $instance['title'];
 
+		}else{
+			$title = __('New title' , 'wpd_widget_domain');
+		}  
+		?>
 
+		<p>
+			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title'); ?></label>
+			<input type="text" name="<?php echo $this->get_field_name('title') ;?>" id="<?php echo $this->get_field_id('title');?>" class="widefat" value="<?php esc_attr($title) ;?>">
+		</p>
 
+<?php 
+	}
 
+	function update($new_instance,$old_instance){
 
+		$instance = array();
 
+		$instance['title'] = ( !empty( $new_instance['title'] ) ? strip_tags($new_instance['title']) : '');
 
-
-
-
+		return $instance;
+	}
+}
 
